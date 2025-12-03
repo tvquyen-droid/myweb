@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trần Việt Quyền - Giảng viên Đại học Kiên Giang</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-yellow: #F5C518;
+            --dark-yellow: #D4A017;
+            --black: #1a1a1a;
+            --dark-gray: #2d2d2d;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
+        }
+        .gold-text {
+            color: var(--primary-yellow);
+        }
+        .gold-bg {
+            background-color: var(--primary-yellow);
+        }
+        .gold-border {
+            border-color: var(--primary-yellow);
+        }
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-yellow);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(245, 197, 24, 0.2);
+        }
+        .avatar-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--primary-yellow);
+        }
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .avatar-container:hover .avatar-upload {
+            opacity: 1;
+        }
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal {
+            display: none;
+            animation: modalFade 0.3s ease;
+        }
+        .modal.show {
+            display: flex;
+        }
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-yellow);
+            border-radius: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 20px;
+            width: 2px;
+            height: calc(100% + 20px);
+            background: var(--primary-yellow);
+        }
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-yellow);
+        }
+        .admin-section {
+            background: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .item-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .item-card:hover {
+            border-color: var(--primary-yellow);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-yellow-500/30">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-graduation-cap text-2xl gold-text"></i>
+                    <span class="text-xl font-bold gold-text" id="headerName">Trần Việt Quyền</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="nav-link active gold-text" data-section="home">Trang chủ</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-yellow-400" data-section="about">Giới thiệu</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-yellow-400" data-section="education">Học vấn</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-yellow-400" data-section="research">Nghiên cứu</a>
+                    <a href="#" class="nav-link text-gray-300 hover:text-yellow-400" data-section="contact">Liên hệ</a>
+                    <button id="adminBtn" class="px-4 py-2 border border-yellow-500 rounded-full text-yellow-400 hover:bg-yellow-500 hover:text-black transition">
+                        <i class="fas fa-user-shield mr-2"></i>Admin
+                    </button>
+                </div>
+                <button class="md:hidden text-yellow-400" id="mobileMenuBtn">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#" class="nav-link active gold-text" data-section="home">Trang chủ</a>
+                    <a href="#" class="nav-link text-gray-300" data-section="about">Giới thiệu</a>
+                    <a href="#" class="nav-link text-gray-300" data-section="education">Học vấn</a>
+                    <a href="#" class="nav-link text-gray-300" data-section="research">Nghiên cứu</a>
+                    <a href="#" class="nav-link text-gray-300" data-section="contact">Liên hệ</a>
+                    <button class="adminLoginBtn px-4 py-2 border border-yellow-500 rounded text-yellow-400">
+                        <i class="fas fa-user-shield mr-2"></i>Admin
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Home Section -->
+        <section id="home" class="section active min-h-screen flex items-center">
+            <div class="container mx-auto px-6 py-20">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+                    <div class="lg:w-1/2 text-center lg:text-left">
+                        <p class="text-yellow-400 text-lg mb-4">Xin chào, tôi là</p>
+                        <h1 class="text-5xl lg:text-7xl font-bold mb-6" id="displayName">Trần Việt Quyền</h1>
+                        <p class="text-2xl text-gray-300 mb-4" id="displayJob">Giảng viên Đại học Kiên Giang</p>
+                        <p class="text-gray-400 mb-8 max-w-lg" id="displayIntro">Với niềm đam mê giảng dạy và nghiên cứu, tôi luôn nỗ lực để truyền đạt kiến thức và truyền cảm hứng cho thế hệ sinh viên tương lai.</p>
+                        <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                            <button class="gold-bg text-black px-8 py-3 rounded-full font-semibold hover:bg-yellow-400 transition" onclick="showSection('contact')">
+                                <i class="fas fa-envelope mr-2"></i>Liên hệ
+                            </button>
+                            <button class="border border-yellow-500 text-yellow-400 px-8 py-3 rounded-full font-semibold hover:bg-yellow-500 hover:text-black transition" onclick="showSection('about')">
+                                <i class="fas fa-user mr-2"></i>Về tôi
+                            </button>
+                        </div>
+                        <div class="flex gap-6 mt-8 justify-center lg:justify-start" id="socialLinks">
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 text-2xl transition" id="socialFacebook"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 text-2xl transition" id="socialLinkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 text-2xl transition" id="socialGithub"><i class="fab fa-github"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-yellow-400 text-2xl transition" id="socialYoutube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 flex justify-center">
+                        <div class="relative">
+                            <div class="w-72 h-72 lg:w-96 lg:h-96 rounded-full border-4 border-yellow-500 overflow-hidden shadow-2xl shadow-yellow-500/20">
+                                <img id="displayAvatar" src="https://ui-avatars.com/api/?name=Tran+Viet+Quyen&size=400&background=F5C518&color=1a1a1a&bold=true" alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="absolute -bottom-4 -right-4 gold-bg text-black px-6 py-3 rounded-full">
+                                <i class="fas fa-quote-left mr-2"></i>Giáo dục là chìa khóa
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section min-h-screen py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-4">Giới <span class="gold-text">Thiệu</span></h2>
+                <p class="text-gray-400 text-center mb-16">Tìm hiểu thêm về tôi</p>
+                
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="bg-gray-900/50 p-8 rounded-2xl border border-yellow-500/20 card-hover">
+                        <h3 class="text-2xl font-bold gold-text mb-6"><i class="fas fa-user-tie mr-3"></i>Thông tin cá nhân</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <span class="w-40 text-gray-400">Họ và tên:</span>
+                                <span class="font-semibold" id="infoName">Trần Việt Quyền</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-40 text-gray-400">Ngày sinh:</span>
+                                <span class="font-semibold" id="infoDob">03/01/1991</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-40 text-gray-400">Chức vụ:</span>
+                                <span class="font-semibold" id="infoPosition">Giảng viên</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-40 text-gray-400">Đơn vị:</span>
+                                <span class="font-semibold" id="infoUnit">Đại học Kiên Giang</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-40 text-gray-400">Email:</span>
+                                <span class="font-semibold gold-text" id="infoEmail">quyen.tv@kgu.edu.vn</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-40 text-gray-400">Điện thoại:</span>
+                                <span class="font-semibold" id="infoPhone">0123 456 789</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-900/50 p-8 rounded-2xl border border-yellow-500/20 card-hover">
+                        <h3 class="text-2xl font-bold gold-text mb-6"><i class="fas fa-lightbulb mr-3"></i>Kỹ năng chuyên môn</h3>
+                        <div class="space-y-4" id="skillsContainer"></div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/20 text-center card-hover">
+                        <div class="text-4xl font-bold gold-text mb-2" id="statYears">10+</div>
+                        <div class="text-gray-400">Năm kinh nghiệm</div>
+                    </div>
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/20 text-center card-hover">
+                        <div class="text-4xl font-bold gold-text mb-2" id="statStudents">1000+</div>
+                        <div class="text-gray-400">Sinh viên đã dạy</div>
+                    </div>
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/20 text-center card-hover">
+                        <div class="text-4xl font-bold gold-text mb-2" id="statPublications">15+</div>
+                        <div class="text-gray-400">Bài báo khoa học</div>
+                    </div>
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/20 text-center card-hover">
+                        <div class="text-4xl font-bold gold-text mb-2" id="statProjects">20+</div>
+                        <div class="text-gray-400">Dự án nghiên cứu</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="section min-h-screen py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-4">Học <span class="gold-text">Vấn</span></h2>
+                <p class="text-gray-400 text-center mb-16">Quá trình học tập và làm việc</p>
+
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <!-- Education Timeline -->
+                    <div>
+                        <h3 class="text-2xl font-bold gold-text mb-8"><i class="fas fa-graduation-cap mr-3"></i>Học vấn</h3>
+                        <div class="relative pl-8" id="educationTimeline"></div>
+                    </div>
+
+                    <!-- Experience Timeline -->
+                    <div>
+                        <h3 class="text-2xl font-bold gold-text mb-8"><i class="fas fa-briefcase mr-3"></i>Kinh nghiệm</h3>
+                        <div class="relative pl-8" id="experienceTimeline"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Section -->
+        <section id="research" class="section min-h-screen py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-4">Nghiên <span class="gold-text">Cứu</span></h2>
+                <p class="text-gray-400 text-center mb-16">Các công trình nghiên cứu và bài báo khoa học</p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="researchContainer"></div>
+
+                <!-- Awards -->
+                <div class="mt-16">
+                    <h3 class="text-2xl font-bold gold-text text-center mb-8"><i class="fas fa-trophy mr-3"></i>Giải thưởng & Thành tựu</h3>
+                    <div class="grid md:grid-cols-2 gap-6" id="awardsContainer"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section min-h-screen py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-4">Liên <span class="gold-text">Hệ</span></h2>
+                <p class="text-gray-400 text-center mb-16">Hãy kết nối với tôi</p>
+
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div>
+                        <div class="bg-gray-900/50 p-8 rounded-2xl border border-yellow-500/20">
+                            <h3 class="text-2xl font-bold gold-text mb-6">Thông tin liên hệ</h3>
+                            <div class="space-y-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="gold-bg text-black w-12 h-12 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold">Địa chỉ</h4>
+                                        <p class="text-gray-400" id="contactAddress">Đại học Kiên Giang, TP. Rạch Giá, Kiên Giang</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="gold-bg text-black w-12 h-12 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold">Email</h4>
+                                        <p class="text-gray-400" id="contactEmail">quyen.tv@kgu.edu.vn</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="gold-bg text-black w-12 h-12 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold">Điện thoại</h4>
+                                        <p class="text-gray-400" id="contactPhone">0123 456 789</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 h-48 rounded-xl overflow-hidden">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.1234567890!2d105.0850!3d10.0167!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAxJzAwLjEiTiAxMDXCsDA1JzA2LjAiRQ!5e0!3m2!1sen!2s!4v1234567890" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <form class="bg-gray-900/50 p-8 rounded-2xl border border-yellow-500/20" id="contactForm">
+                            <h3 class="text-2xl font-bold gold-text mb-6">Gửi tin nhắn</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-400 mb-2">Họ và tên</label>
+                                    <input type="text" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500" placeholder="Nhập họ tên của bạn">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-400 mb-2">Email</label>
+                                    <input type="email" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500" placeholder="Nhập email của bạn">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-400 mb-2">Chủ đề</label>
+                                    <input type="text" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500" placeholder="Chủ đề tin nhắn">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-400 mb-2">Nội dung</label>
+                                    <textarea rows="4" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500" placeholder="Nhập nội dung tin nhắn"></textarea>
+                                </div>
+                                <button type="submit" class="w-full gold-bg text-black py-3 rounded-lg font-semibold hover:bg-yellow-400 transition">
+                                    <i class="fas fa-paper-plane mr-2"></i>Gửi tin nhắn
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black/50 border-t border-yellow-500/20 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400">© 2024 <span class="gold-text" id="footerName">Trần Việt Quyền</span>. All rights reserved.</p>
+            <p class="text-gray-500 text-sm mt-2">Designed with <i class="fas fa-heart text-yellow-500"></i> for education</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal fixed inset-0 bg-black/80 z-50 items-center justify-center">
+        <div class="bg-gray-900 p-8 rounded-2xl border border-yellow-500/30 w-full max-w-md mx-4 relative">
+            <div class="text-center mb-6">
+                <i class="fas fa-user-shield text-5xl gold-text mb-4"></i>
+                <h3 class="text-2xl font-bold">Đăng nhập Admin</h3>
+            </div>
+            <form id="loginForm">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-400 mb-2">Tên đăng nhập</label>
+                        <input type="text" id="loginUsername" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500" placeholder="Nhập tên đăng nhập">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-2">Mật khẩu</label>
+                        <input type="password" id="loginPassword" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-yellow-500" placeholder="Nhập mật khẩu">
+                    </div>
+                    <p id="loginError" class="text-red-500 text-sm hidden">Tên đăng nhập hoặc mật khẩu không đúng!</p>
+                    <button type="submit" class="w-full gold-bg text-black py-3 rounded-lg font-semibold hover:bg-yellow-400 transition">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Đăng nhập
+                    </button>
+                </div>
+            </form>
+            <button id="closeLoginModal" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminPanel" class="modal fixed inset-0 bg-black/80 z-50 items-start justify-center overflow-y-auto py-10">
+        <div class="bg-gray-900 rounded-2xl border border-yellow-500/30 w-full max-w-5xl mx-4 my-auto">
+            <div class="p-6 border-b border-yellow-500/20 flex justify-between items-center sticky top-0 bg-gray-900 rounded-t-2xl z-10">
+                <h3 class="text-2xl font-bold gold-text"><i class="fas fa-cog mr-3"></i>Quản trị viên</h3>
+                <div class="flex gap-4">
+                    <button id="logoutBtn" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Đăng xuất
+                    </button>
+                    <button id="closeAdminPanel" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <!-- Admin Tabs -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button class="admin-tab active px-4 py-2 rounded-lg bg-yellow-500 text-black font-semibold" data-tab="profile">
+                        <i class="fas fa-user mr-2"></i>Hồ sơ
+                    </button>
+                    <button class="admin-tab px-4 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700" data-tab="skills">
+                        <i class="fas fa-chart-bar mr-2"></i>Kỹ năng
+                    </button>
+                    <button class="admin-tab px-4 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700" data-tab="education">
+                        <i class="fas fa-graduation-cap mr-2"></i>Học vấn
+                    </button>
+                    <button class="admin-tab px-4 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700" data-tab="experience">
+                        <i class="fas fa-briefcase mr-2"></i>Kinh nghiệm
+                    </button>
+                    <button class="admin-tab px-4 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700" data-tab="research">
+                        <i class="fas fa-flask mr-2"></i>Nghiên cứu
+                    </button>
+                    <button class="admin-tab px-4 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700" data-tab="awards">
+                        <i class="fas fa-trophy mr-2"></i>Giải thưởng
+                    </button>
+                    <button class="admin-tab px-4 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700" data-tab="stats">
+                        <i class="fas fa-chart-pie mr-2"></i>Thống kê
+                    </button>
+                    <button class="admin-tab px-4 py-2 rounded-lg bg-gray-800 text-gray-400 hover:bg-gray-700" data-tab="social">
+                        <i class="fas fa-share-alt mr-2"></i>Mạng xã hội
+                    </button>
+                </div>
+
+                <!-- Profile Tab -->
+                <div class="admin-tab-content" id="tab-profile">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="col-span-2 flex justify-center">
+                            <div class="avatar-container">
+                                <img id="adminAvatar" src="https://ui-avatars.com/api/?name=Tran+Viet+Quyen&size=400&background=F5C518&color=1a1a1a&bold=true" alt="Avatar" class="w-full h-full object-cover">
+                                <label class="avatar-upload gold-text cursor-pointer">
+                                    <i class="fas fa-camera mr-2"></i>Đổi ảnh
+                                    <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Họ và tên</label>
+                            <input type="text" id="adminName" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="Trần Việt Quyền">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Ngày sinh</label>
+                            <input type="text" id="adminDob" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="03/01/1991">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Chức vụ</label>
+                            <input type="text" id="adminPosition" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="Giảng viên">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Đơn vị công tác</label>
+                            <input type="text" id="adminUnit" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="Đại học Kiên Giang">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Email</label>
+                            <input type="email" id="adminEmail" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="quyen.tv@kgu.edu.vn">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Điện thoại</label>
+                            <input type="text" id="adminPhone" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="0123 456 789">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Địa chỉ</label>
+                            <input type="text" id="adminAddress" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="Đại học Kiên Giang, TP. Rạch Giá, Kiên Giang">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Tiêu đề công việc</label>
+                            <input type="text" id="adminJobTitle" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="Giảng viên Đại học Kiên Giang">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-gray-400 mb-2">Giới thiệu bản thân</label>
+                            <textarea id="adminIntro" rows="3" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">Với niềm đam mê giảng dạy và nghiên cứu, tôi luôn nỗ lực để truyền đạt kiến thức và truyền cảm hứng cho thế hệ sinh viên tương lai.</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Tab -->
+                <div class="admin-tab-content hidden" id="tab-skills">
+                    <div class="admin-section">
+                        <h4 class="text-lg font-bold gold-text mb-4"><i class="fas fa-list mr-2"></i>Danh sách kỹ năng</h4>
+                        <div id="skillsEditor" class="space-y-3"></div>
+                        <button id="addSkillBtn" class="mt-4 px-4 py-2 border border-yellow-500 text-yellow-400 rounded-lg hover:bg-yellow-500 hover:text-black transition">
+                            <i class="fas fa-plus mr-2"></i>Thêm kỹ năng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Education Tab -->
+                <div class="admin-tab-content hidden" id="tab-education">
+                    <div class="admin-section">
+                        <h4 class="text-lg font-bold gold-text mb-4"><i class="fas fa-graduation-cap mr-2"></i>Quá trình học vấn</h4>
+                        <div id="educationEditor" class="space-y-3"></div>
+                        <button id="addEducationBtn" class="mt-4 px-4 py-2 border border-yellow-500 text-yellow-400 rounded-lg hover:bg-yellow-500 hover:text-black transition">
+                            <i class="fas fa-plus mr-2"></i>Thêm học vấn
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Experience Tab -->
+                <div class="admin-tab-content hidden" id="tab-experience">
+                    <div class="admin-section">
+                        <h4 class="text-lg font-bold gold-text mb-4"><i class="fas fa-briefcase mr-2"></i>Kinh nghiệm làm việc</h4>
+                        <div id="experienceEditor" class="space-y-3"></div>
+                        <button id="addExperienceBtn" class="mt-4 px-4 py-2 border border-yellow-500 text-yellow-400 rounded-lg hover:bg-yellow-500 hover:text-black transition">
+                            <i class="fas fa-plus mr-2"></i>Thêm kinh nghiệm
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Research Tab -->
+                <div class="admin-tab-content hidden" id="tab-research">
+                    <div class="admin-section">
+                        <h4 class="text-lg font-bold gold-text mb-4"><i class="fas fa-flask mr-2"></i>Bài báo & Công trình nghiên cứu</h4>
+                        <div id="researchEditor" class="space-y-3"></div>
+                        <button id="addResearchBtn" class="mt-4 px-4 py-2 border border-yellow-500 text-yellow-400 rounded-lg hover:bg-yellow-500 hover:text-black transition">
+                            <i class="fas fa-plus mr-2"></i>Thêm nghiên cứu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Awards Tab -->
+                <div class="admin-tab-content hidden" id="tab-awards">
+                    <div class="admin-section">
+                        <h4 class="text-lg font-bold gold-text mb-4"><i class="fas fa-trophy mr-2"></i>Giải thưởng & Thành tựu</h4>
+                        <div id="awardsEditor" class="space-y-3"></div>
+                        <button id="addAwardBtn" class="mt-4 px-4 py-2 border border-yellow-500 text-yellow-400 rounded-lg hover:bg-yellow-500 hover:text-black transition">
+                            <i class="fas fa-plus mr-2"></i>Thêm giải thưởng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Tab -->
+                <div class="admin-tab-content hidden" id="tab-stats">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-400 mb-2">Số năm kinh nghiệm</label>
+                            <input type="text" id="adminStatYears" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="10+">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Số sinh viên đã dạy</label>
+                            <input type="text" id="adminStatStudents" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="1000+">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Số bài báo khoa học</label>
+                            <input type="text" id="adminStatPublications" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="15+">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2">Số dự án nghiên cứu</label>
+                            <input type="text" id="adminStatProjects" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" value="20+">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Tab -->
+                <div class="admin-tab-content hidden" id="tab-social">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-400 mb-2"><i class="fab fa-facebook mr-2"></i>Facebook URL</label>
+                            <input type="text" id="adminFacebook" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" placeholder="https://facebook.com/...">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2"><i class="fab fa-linkedin mr-2"></i>LinkedIn URL</label>
+                            <input type="text" id="adminLinkedin" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" placeholder="https://linkedin.com/in/...">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2"><i class="fab fa-github mr-2"></i>GitHub URL</label>
+                            <input type="text" id="adminGithub" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" placeholder="https://github.com/...">
+                        </div>
+                        <div>
+                            <label class="block text-gray-400 mb-2"><i class="fab fa-youtube mr-2"></i>YouTube URL</label>
+                            <input type="text" id="adminYoutube" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" placeholder="https://youtube.com/...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="mt-8 flex justify-end">
+                    <button id="saveChanges" class="gold-bg text-black px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition">
+                        <i class="fas fa-save mr-2"></i>Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <i class="fas fa-check-circle mr-2"></i><span id="toastMessage">Đã lưu thành công!</span>
+    </div>
+
+    <script>
+        // Data management
+        let siteData = {
+            name: 'Trần Việt Quyền',
+            dob: '03/01/1991',
+            position: 'Giảng viên',
+            unit: 'Đại học Kiên Giang',
+            email: 'tvquyen@vnkgu.edu.vn',
+            phone: '0774013327',
+            address: 'Trường Đại học Kiên Giang, Xã Châu Thành, An Giang',
+            jobTitle: 'Giảng viên Đại học Kiên Giang',
+            intro: 'Với niềm đam mê giảng dạy và nghiên cứu trong lĩnh vực Công nghệ sinh học, tôi luôn nỗ lực để truyền đạt kiến thức và truyền cảm hứng cho thế hệ sinh viên tương lai.',
+            avatar: '',
+            skills: [
+                { name: 'Giảng dạy', percent: 95 },
+                { name: 'Nghiên cứu Công nghệ sinh học', percent: 90 },
+                { name: 'Phân tích thí nghiệm', percent: 85 },
+                { name: 'Ngoại ngữ (Tiếng Anh)', percent: 80 }
+            ],
+            education: [
+                { period: '2014 - 2016', title: 'Thạc sĩ Công nghệ sinh học', institution: 'Đại học Cần Thơ' },
+                { period: '2009 - 2013', title: 'Kỹ sư Công nghệ sinh học', institution: 'Đại học Cửu Long' }
+            ],
+            experience: [
+                { period: '2017 - Hiện tại', title: 'Giảng viên', institution: 'Đại học Kiên Giang', description: 'Giảng dạy các môn chuyên ngành Công nghệ sinh học, hướng dẫn sinh viên nghiên cứu khoa học và thực hành thí nghiệm' }
+            ],
+            research: [
+                { year: '2025', title: 'Nghiên cứu khả năng lên men kombucha, sinh tổng hợp axit glucoronic của nấm men Zygoascus Meyerae và vi khuẩn Komagataeibacter Saccharivorans', journal: 'Tạp chí Nông nghiệp và Phát triển Nông thôn, Số 498 kỳ 1, tháng 2/2025, Trang 72-81', authors: 'Phù Thị Thanh Khiết, Trần Việt Quyền, Eng Disivetvathana, Lê Thái Anh Thư', link: '#' },
+                { year: '2024', title: 'Unravelling stress responsive NAC1 gene (OsNAC1) from potential Indonesia and Vietnam local varieties rice', journal: 'International Journal of Agricultural Technology, 20(6), 2619–2632', authors: 'Zulheri N., Duong V.N., Ifan A.C., Indah A., Yen T.V., Quyen T.V., Asmah I.', link: '#' },
+                { year: '2023', title: 'Phân lập, tuyển chọn tổ hợp cộng sinh nấm men và vi khuẩn acetic từ trà kombucha lên men tự nhiên ở tỉnh Kiên Giang', journal: 'Tạp chí Công Thương, (18), 297–303', authors: 'Phù Thi Thanh Khết, Trần Việt Quyền, Eng Disivetvathana, Vong Sambath Lida', link: '#' },
+                { year: '2022', title: 'Phân lập, tuyển chọn và định danh vi khuẩn tía không lưu huỳnh, thử nghiệm khả năng xử lý sulfide trong nước ao nuôi tôm tại huyện Kiên Lương, tỉnh Kiên Giang', journal: 'Tạp chí Công Thương, Số 10, tháng 5/2022, 80–386', authors: 'Trần Việt Quyền, Trần Hoàng Khang, Trần Văn Bé', link: '#' },
+                { year: '2017', title: 'Disease reducing effects of antagonistic soil bacteria on Fusarium basal rot of shallot caused by Fusarium oxysporum in Vĩnh Châu, Sóc Trăng', journal: 'CTU Journal of Innovation and Sustainable Development, (06), 31–37', authors: 'Nguyễn Đắc Khoa, Trần Việt Quyền, Châu Hoàng Trung Tín', link: 'https://doi.org/10.22144/ctu.jen.2017' }
+            ],
+            awards: [
+                { title: 'Giảng viên tiêu biểu năm 2023', organization: 'Đại học Kiên Giang', icon: 'medal' },
+                { title: 'Giải thưởng NCKH xuất sắc 2022', organization: 'Đại học Kiên Giang', icon: 'award' }
+            ],
+            stats: {
+                years: '7+',
+                students: '500+',
+                publications: '10+',
+                projects: '5+'
+            },
+            social: {
+                facebook: '',
+                linkedin: '',
+                github: '',
+                youtube: ''
+            }
+        };
+
+        let isLoggedIn = false;
+
+        // Load saved data
+        function loadData() {
+            const saved = localStorage.getItem('siteData');
+            if (saved) {
+                siteData = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('siteData', JSON.stringify(siteData));
+        }
+
+        // Update display
+        function updateDisplay() {
+            // Header & Home
+            document.getElementById('headerName').textContent = siteData.name;
+            document.getElementById('displayName').textContent = siteData.name;
+            document.getElementById('displayJob').textContent = siteData.jobTitle;
+            document.getElementById('displayIntro').textContent = siteData.intro;
+            document.getElementById('footerName').textContent = siteData.name;
+            
+            // Avatar
+            const avatarSrc = siteData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(siteData.name)}&size=400&background=F5C518&color=1a1a1a&bold=true`;
+            document.getElementById('displayAvatar').src = avatarSrc;
+            document.getElementById('adminAvatar').src = avatarSrc;
+
+            // About section
+            document.getElementById('infoName').textContent = siteData.name;
+            document.getElementById('infoDob').textContent = siteData.dob;
+            document.getElementById('infoPosition').textContent = siteData.position;
+            document.getElementById('infoUnit').textContent = siteData.unit;
+            document.getElementById('infoEmail').textContent = siteData.email;
+            document.getElementById('infoPhone').textContent = siteData.phone;
+
+            // Contact section
+            document.getElementById('contactAddress').textContent = siteData.address;
+            document.getElementById('contactEmail').textContent = siteData.email;
+            document.getElementById('contactPhone').textContent = siteData.phone;
+
+            // Stats
+            document.getElementById('statYears').textContent = siteData.stats.years;
+            document.getElementById('statStudents').textContent = siteData.stats.students;
+            document.getElementById('statPublications').textContent = siteData.stats.publications;
+            document.getElementById('statProjects').textContent = siteData.stats.projects;
+
+            // Skills
+            const skillsContainer = document.getElementById('skillsContainer');
+            skillsContainer.innerHTML = siteData.skills.map(skill => `
+                <div class="skill-item">
+                    <div class="flex justify-between mb-2">
+                        <span>${skill.name}</span>
+                        <span class="gold-text">${skill.percent}%</span>
+                    </div>
+                    <div class="h-2 bg-gray-700 rounded-full">
+                        <div class="h-full gold-bg rounded-full transition-all duration-500" style="width: ${skill.percent}%"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Education Timeline
+            const educationTimeline = document.getElementById('educationTimeline');
+            educationTimeline.innerHTML = siteData.education.map((edu, index) => `
+                <div class="timeline-item relative ${index < siteData.education.length - 1 ? 'pb-8' : ''}">
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/20">
+                        <span class="gold-text text-sm">${edu.period}</span>
+                        <h4 class="text-xl font-bold mt-2">${edu.title}</h4>
+                        <p class="text-gray-400 mt-2">${edu.institution}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Experience Timeline
+            const experienceTimeline = document.getElementById('experienceTimeline');
+            experienceTimeline.innerHTML = siteData.experience.map((exp, index) => `
+                <div class="timeline-item relative ${index < siteData.experience.length - 1 ? 'pb-8' : ''}">
+                    <div class="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/20">
+                        <span class="gold-text text-sm">${exp.period}</span>
+                        <h4 class="text-xl font-bold mt-2">${exp.title}</h4>
+                        <p class="text-gray-400 mt-2">${exp.institution}</p>
+                        ${exp.description ? `<p class="text-sm text-gray-500 mt-2">${exp.description}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            // Research
+            const researchContainer = document.getElementById('researchContainer');
+            researchContainer.innerHTML = siteData.research.map(res => `
+                <div class="bg-gray-900/50 p-6 rounded-2xl border border-yellow-500/20 card-hover">
+                    <div class="gold-bg text-black px-3 py-1 rounded-full text-sm inline-block mb-4">${res.year}</div>
+                    <h4 class="text-lg font-bold mb-3 leading-relaxed">${res.title}</h4>
+                    ${res.authors ? `<p class="text-yellow-400/80 text-sm mb-2"><i class="fas fa-users mr-2"></i>${res.authors}</p>` : ''}
+                    <p class="text-gray-400 text-sm mb-4"><i class="fas fa-book mr-2"></i>${res.journal}</p>
+                    ${res.link && res.link !== '#' ? `<a href="${res.link}" target="_blank" class="inline-flex items-center text-yellow-400 hover:text-yellow-300 transition">
+                        <i class="fas fa-external-link-alt mr-2"></i>
+                        <span class="text-sm">Xem bài báo</span>
+                    </a>` : ''}
+                </div>
+            `).join('');
+
+            // Awards
+            const awardsContainer = document.getElementById('awardsContainer');
+            awardsContainer.innerHTML = siteData.awards.map(award => `
+                <div class="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/20 flex items-center gap-4 card-hover">
+                    <div class="gold-bg text-black w-12 h-12 rounded-full flex items-center justify-center text-xl">
+                        <i class="fas fa-${award.icon || 'trophy'}"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold">${award.title}</h4>
+                        <p class="text-gray-400 text-sm">${award.organization}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Social links
+            if (siteData.social.facebook) document.getElementById('socialFacebook').href = siteData.social.facebook;
+            if (siteData.social.linkedin) document.getElementById('socialLinkedin').href = siteData.social.linkedin;
+            if (siteData.social.github) document.getElementById('socialGithub').href = siteData.social.github;
+            if (siteData.social.youtube) document.getElementById('socialYoutube').href = siteData.social.youtube;
+
+            // Update admin form
+            updateAdminForms();
+        }
+
+        function updateAdminForms() {
+            document.getElementById('adminName').value = siteData.name;
+            document.getElementById('adminDob').value = siteData.dob;
+            document.getElementById('adminPosition').value = siteData.position;
+            document.getElementById('adminUnit').value = siteData.unit;
+            document.getElementById('adminEmail').value = siteData.email;
+            document.getElementById('adminPhone').value = siteData.phone;
+            document.getElementById('adminAddress').value = siteData.address;
+            document.getElementById('adminJobTitle').value = siteData.jobTitle;
+            document.getElementById('adminIntro').value = siteData.intro;
+            document.getElementById('adminStatYears').value = siteData.stats.years;
+            document.getElementById('adminStatStudents').value = siteData.stats.students;
+            document.getElementById('adminStatPublications').value = siteData.stats.publications;
+            document.getElementById('adminStatProjects').value = siteData.stats.projects;
+            document.getElementById('adminFacebook').value = siteData.social.facebook;
+            document.getElementById('adminLinkedin').value = siteData.social.linkedin;
+            document.getElementById('adminGithub').value = siteData.social.github;
+            document.getElementById('adminYoutube').value = siteData.social.youtube;
+
+            updateSkillsEditor();
+            updateEducationEditor();
+            updateExperienceEditor();
+            updateResearchEditor();
+            updateAwardsEditor();
+        }
+
+        // Skills Editor
+        function updateSkillsEditor() {
+            const container = document.getElementById('skillsEditor');
+            container.innerHTML = siteData.skills.map((skill, index) => `
+                <div class="item-card flex flex-wrap gap-3 items-center" data-index="${index}">
+                    <input type="text" class="flex-1 min-w-[200px] bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white skill-name" value="${skill.name}" placeholder="Tên kỹ năng">
+                    <div class="flex items-center gap-2">
+                        <input type="range" class="skill-range" min="0" max="100" value="${skill.percent}" oninput="this.nextElementSibling.value = this.value">
+                        <input type="number" class="w-20 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white skill-percent" value="${skill.percent}" min="0" max="100">
+                        <span class="text-gray-400">%</span>
+                    </div>
+                    <button class="text-red-500 hover:text-red-400 p-2 delete-skill"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
+            attachDeleteHandlers('skill', 'skills');
+        }
+
+        // Education Editor
+        function updateEducationEditor() {
+            const container = document.getElementById('educationEditor');
+            container.innerHTML = siteData.education.map((edu, index) => `
+                <div class="item-card" data-index="${index}">
+                    <div class="grid md:grid-cols-3 gap-3 mb-3">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white edu-period" value="${edu.period}" placeholder="Thời gian (VD: 2015 - 2019)">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white edu-title" value="${edu.title}" placeholder="Bằng cấp/Chứng chỉ">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white edu-institution" value="${edu.institution}" placeholder="Trường/Tổ chức">
+                    </div>
+                    <div class="flex justify-end">
+                        <button class="text-red-500 hover:text-red-400 p-2 delete-education"><i class="fas fa-trash mr-1"></i>Xóa</button>
+                    </div>
+                </div>
+            `).join('');
+            attachDeleteHandlers('education', 'education');
+        }
+
+        // Experience Editor
+        function updateExperienceEditor() {
+            const container = document.getElementById('experienceEditor');
+            container.innerHTML = siteData.experience.map((exp, index) => `
+                <div class="item-card" data-index="${index}">
+                    <div class="grid md:grid-cols-3 gap-3 mb-3">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white exp-period" value="${exp.period}" placeholder="Thời gian">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white exp-title" value="${exp.title}" placeholder="Chức vụ">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white exp-institution" value="${exp.institution}" placeholder="Đơn vị">
+                    </div>
+                    <textarea class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white exp-description mb-3" placeholder="Mô tả công việc">${exp.description || ''}</textarea>
+                    <div class="flex justify-end">
+                        <button class="text-red-500 hover:text-red-400 p-2 delete-experience"><i class="fas fa-trash mr-1"></i>Xóa</button>
+                    </div>
+                </div>
+            `).join('');
+            attachDeleteHandlers('experience', 'experience');
+        }
+
+        // Research Editor
+        function updateResearchEditor() {
+            const container = document.getElementById('researchEditor');
+            container.innerHTML = siteData.research.map((res, index) => `
+                <div class="item-card" data-index="${index}">
+                    <div class="grid md:grid-cols-4 gap-3 mb-3">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white res-year" value="${res.year}" placeholder="Năm">
+                        <input type="text" class="md:col-span-3 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white res-title" value="${res.title}" placeholder="Tên bài báo/Công trình">
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-3 mb-3">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white res-authors" value="${res.authors || ''}" placeholder="Tác giả (VD: Nguyễn Văn A, Trần Văn B)">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white res-journal" value="${res.journal}" placeholder="Tạp chí/Hội nghị">
+                    </div>
+                    <div class="flex gap-3 items-center">
+                        <input type="text" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white res-link" value="${res.link || '#'}" placeholder="Link bài báo (URL)">
+                        <button class="text-red-500 hover:text-red-400 p-2 delete-research"><i class="fas fa-trash mr-1"></i>Xóa</button>
+                    </div>
+                </div>
+            `).join('');
+            attachDeleteHandlers('research', 'research');
+        }
+
+        // Awards Editor
+        function updateAwardsEditor() {
+            const container = document.getElementById('awardsEditor');
+            container.innerHTML = siteData.awards.map((award, index) => `
+                <div class="item-card" data-index="${index}">
+                    <div class="grid md:grid-cols-3 gap-3 mb-3">
+                        <input type="text" class="md:col-span-2 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white award-title" value="${award.title}" placeholder="Tên giải thưởng">
+                        <input type="text" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white award-organization" value="${award.organization}" placeholder="Tổ chức trao giải">
+                    </div>
+                    <div class="flex gap-3 items-center">
+                        <select class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white award-icon">
+                            <option value="trophy" ${award.icon === 'trophy' ? 'selected' : ''}>🏆 Trophy</option>
+                            <option value="medal" ${award.icon === 'medal' ? 'selected' : ''}>🏅 Medal</option>
+                            <option value="award" ${award.icon === 'award' ? 'selected' : ''}>🎖️ Award</option>
+                            <option value="star" ${award.icon === 'star' ? 'selected' : ''}>⭐ Star</option>
+                            <option value="certificate" ${award.icon === 'certificate' ? 'selected' : ''}>📜 Certificate</option>
+                        </select>
+                        <button class="text-red-500 hover:text-red-400 p-2 delete-award"><i class="fas fa-trash mr-1"></i>Xóa</button>
+                    </div>
+                </div>
+            `).join('');
+            attachDeleteHandlers('award', 'awards');
+        }
+
+        // Generic delete handler
+        function attachDeleteHandlers(type, dataKey) {
+            document.querySelectorAll(`.delete-${type}`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.item-card');
+                    const index = parseInt(card.dataset.index);
+                    siteData[dataKey].splice(index, 1);
+                    updateAdminForms();
+                });
+            });
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active', 'gold-text');
+                link.classList.add('text-gray-300');
+                if (link.dataset.section === sectionId) {
+                    link.classList.add('active', 'gold-text');
+                    link.classList.remove('text-gray-300');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection(link.dataset.section);
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+
+        // Mobile menu
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
+
+        // Admin button
+        document.getElementById('adminBtn').addEventListener('click', () => {
+            if (isLoggedIn) {
+                document.getElementById('adminPanel').classList.add('show');
+            } else {
+                document.getElementById('loginModal').classList.add('show');
+            }
+        });
+
+        document.querySelectorAll('.adminLoginBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('loginModal').classList.add('show');
+            });
+        });
+
+        // Close modals
+        document.getElementById('closeLoginModal').addEventListener('click', () => {
+            document.getElementById('loginModal').classList.remove('show');
+        });
+
+        document.getElementById('closeAdminPanel').addEventListener('click', () => {
+            document.getElementById('adminPanel').classList.remove('show');
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (username === 'admin' && password === 'admin') {
+                isLoggedIn = true;
+                document.getElementById('loginModal').classList.remove('show');
+                document.getElementById('adminPanel').classList.add('show');
+                document.getElementById('loginError').classList.add('hidden');
+                document.getElementById('adminBtn').innerHTML = '<i class="fas fa-user-shield mr-2"></i>Dashboard';
+                showToast('Đăng nhập thành công!');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            isLoggedIn = false;
+            document.getElementById('adminPanel').classList.remove('show');
+            document.getElementById('adminBtn').innerHTML = '<i class="fas fa-user-shield mr-2"></i>Admin';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            showToast('Đã đăng xuất!');
+        });
+
+        // Admin tabs
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(t => {
+                    t.classList.remove('bg-yellow-500', 'text-black', 'font-semibold');
+                    t.classList.add('bg-gray-800', 'text-gray-400');
+                });
+                tab.classList.add('bg-yellow-500', 'text-black', 'font-semibold');
+                tab.classList.remove('bg-gray-800', 'text-gray-400');
+
+                document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`tab-${tab.dataset.tab}`).classList.remove('hidden');
+            });
+        });
+
+        // Avatar upload
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    siteData.avatar = e.target.result;
+                    document.getElementById('adminAvatar').src = e.target.result;
+                    document.getElementById('displayAvatar').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Add buttons
+        document.getElementById('addSkillBtn').addEventListener('click', () => {
+            siteData.skills.push({ name: 'Kỹ năng mới', percent: 50 });
+            updateSkillsEditor();
+        });
+
+        document.getElementById('addEducationBtn').addEventListener('click', () => {
+            siteData.education.unshift({ period: '', title: '', institution: '' });
+            updateEducationEditor();
+        });
+
+        document.getElementById('addExperienceBtn').addEventListener('click', () => {
+            siteData.experience.unshift({ period: '', title: '', institution: '', description: '' });
+            updateExperienceEditor();
+        });
+
+        document.getElementById('addResearchBtn').addEventListener('click', () => {
+            siteData.research.unshift({ year: new Date().getFullYear().toString(), title: '', journal: '', link: '#' });
+            updateResearchEditor();
+        });
+
+        document.getElementById('addAwardBtn').addEventListener('click', () => {
+            siteData.awards.push({ title: '', organization: '', icon: 'trophy' });
+            updateAwardsEditor();
+        });
+
+        // Collect all data and save
+        document.getElementById('saveChanges').addEventListener('click', () => {
+            // Collect profile data
+            siteData.name = document.getElementById('adminName').value;
+            siteData.dob = document.getElementById('adminDob').value;
+            siteData.position = document.getElementById('adminPosition').value;
+            siteData.unit = document.getElementById('adminUnit').value;
+            siteData.email = document.getElementById('adminEmail').value;
+            siteData.phone = document.getElementById('adminPhone').value;
+            siteData.address = document.getElementById('adminAddress').value;
+            siteData.jobTitle = document.getElementById('adminJobTitle').value;
+            siteData.intro = document.getElementById('adminIntro').value;
+
+            // Collect stats
+            siteData.stats.years = document.getElementById('adminStatYears').value;
+            siteData.stats.students = document.getElementById('adminStatStudents').value;
+            siteData.stats.publications = document.getElementById('adminStatPublications').value;
+            siteData.stats.projects = document.getElementById('adminStatProjects').value;
+
+            // Collect social links
+            siteData.social.facebook = document.getElementById('adminFacebook').value;
+            siteData.social.linkedin = document.getElementById('adminLinkedin').value;
+            siteData.social.github = document.getElementById('adminGithub').value;
+            siteData.social.youtube = document.getElementById('adminYoutube').value;
+
+            // Collect skills
+            const skillCards = document.querySelectorAll('#skillsEditor .item-card');
+            siteData.skills = Array.from(skillCards).map(card => ({
+                name: card.querySelector('.skill-name').value,
+                percent: parseInt(card.querySelector('.skill-percent').value) || 0
+            }));
+
+            // Collect education
+            const eduCards = document.querySelectorAll('#educationEditor .item-card');
+            siteData.education = Array.from(eduCards).map(card => ({
+                period: card.querySelector('.edu-period').value,
+                title: card.querySelector('.edu-title').value,
+                institution: card.querySelector('.edu-institution').value
+            }));
+
+            // Collect experience
+            const expCards = document.querySelectorAll('#experienceEditor .item-card');
+            siteData.experience = Array.from(expCards).map(card => ({
+                period: card.querySelector('.exp-period').value,
+                title: card.querySelector('.exp-title').value,
+                institution: card.querySelector('.exp-institution').value,
+                description: card.querySelector('.exp-description').value
+            }));
+
+            // Collect research
+            const resCards = document.querySelectorAll('#researchEditor .item-card');
+            siteData.research = Array.from(resCards).map(card => ({
+                year: card.querySelector('.res-year').value,
+                title: card.querySelector('.res-title').value,
+                authors: card.querySelector('.res-authors').value,
+                journal: card.querySelector('.res-journal').value,
+                link: card.querySelector('.res-link').value || '#'
+            }));
+
+            // Collect awards
+            const awardCards = document.querySelectorAll('#awardsEditor .item-card');
+            siteData.awards = Array.from(awardCards).map(card => ({
+                title: card.querySelector('.award-title').value,
+                organization: card.querySelector('.award-organization').value,
+                icon: card.querySelector('.award-icon').value
+            }));
+
+            saveData();
+            updateDisplay();
+            showToast('Đã lưu thay đổi thành công!');
+        });
+
+        // Contact form
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showToast('Tin nhắn đã được gửi thành công!');
+            e.target.reset();
+        });
+
+        // Click outside modal to close
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('loginModal')) {
+                document.getElementById('loginModal').classList.remove('show');
+            }
+        });
+
+        document.getElementById('adminPanel').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('adminPanel')) {
+                document.getElementById('adminPanel').classList.remove('show');
+            }
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
