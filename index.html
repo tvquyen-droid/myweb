@@ -408,8 +408,22 @@
     <!-- Footer -->
     <footer class="bg-black/50 border-t border-yellow-500/20 py-8">
         <div class="container mx-auto px-6 text-center">
-            <p class="text-gray-400">© 2024 <span class="gold-text" id="footerName">Trần Việt Quyền</span>. All rights reserved.</p>
-            <p class="text-gray-500 text-sm mt-2">Designed with <i class="fas fa-heart text-yellow-500"></i> for education</p>
+            <!-- Updated Footer Content -->
+            <div class="text-gray-400 flex flex-wrap items-center justify-center gap-1 mb-2">
+                <a href="https://tvquyen-droid.github.io/myweb/" class="gold-text hover:text-yellow-400 transition font-semibold">Quyen</a> 
+                © 2025 by 
+                <a href="https://example.com" class="gold-text hover:text-yellow-400 transition font-semibold">Tran</a> 
+                is licensed under 
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="text-blue-400 hover:text-blue-300 transition flex items-center">
+                    CC BY-SA 4.0
+                </a>
+                <div class="flex items-center">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em; filter: invert(0.8);">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em; filter: invert(0.8);">
+                    <img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em; filter: invert(0.8);">
+                </div>
+            </div>
+            <p class="text-gray-500 text-sm">Designed with <i class="fas fa-heart text-yellow-500"></i> for education</p>
         </div>
     </footer>
 
@@ -725,7 +739,9 @@
             document.getElementById('displayName').textContent = siteData.name;
             document.getElementById('displayJob').textContent = siteData.jobTitle;
             document.getElementById('displayIntro').textContent = siteData.intro;
-            document.getElementById('footerName').textContent = siteData.name;
+            
+            // Đã loại bỏ phần cập nhật footerName vì đã thay thế footer tùy chỉnh
+            // document.getElementById('footerName').textContent = siteData.name;
             
             // Avatar
             const avatarSrc = siteData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(siteData.name)}&size=400&background=F5C518&color=1a1a1a&bold=true`;
